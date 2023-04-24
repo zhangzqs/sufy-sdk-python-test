@@ -2,3 +2,4 @@
 venv
 resources/test-config.yaml
 .pytest_cache
+test_*.yaml
