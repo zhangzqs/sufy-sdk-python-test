@@ -1,11 +1,9 @@
-import vcr
-
 from object_tests.object_test_base import BaseObjectTest
 
 
 class ListObjectTest(BaseObjectTest):
     def test_list_a(self):
-        with vcr.use_cassette('test_list_objects_cass.yaml') as cass:
+        with self.vcr.use_cassette('test_list_objects_cass.yaml') as cass:
             response = self.object_service.list_objects(
                 bucket=self.get_bucket_name(),
             )

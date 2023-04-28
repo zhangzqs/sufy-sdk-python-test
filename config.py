@@ -37,10 +37,23 @@ class ProxyConfig:
 
 
 @dataclass()
+class VCRConfig:
+    serializer: str
+    cassette_library_dir: str
+    record_mode: str
+    match_on: list
+
+    @staticmethod
+    def from_dict(dict_: Dict[str, Any]):
+        return VCRConfig(**dict_)
+
+
+@dataclass()
 class TestConfig:
     auth: AuthConfig
     object: ObjectConfig
     proxy: ProxyConfig
+    vcr: VCRConfig
 
     @staticmethod
     def from_dict(dict_: Dict[str, Any]):
@@ -48,6 +61,7 @@ class TestConfig:
             auth=AuthConfig.from_dict(dict_['auth']),
             object=ObjectConfig.from_dict(dict_['object']),
             proxy=ProxyConfig.from_dict(dict_['proxy']),
+            vcr=VCRConfig.from_dict(dict_['vcr']),
         )
 
 
@@ -55,6 +69,7 @@ __all__ = [
     'TestConfig',
     'AuthConfig',
     'ObjectConfig',
+    'VCRConfig',
     'ProxyConfig',
 ]
 
