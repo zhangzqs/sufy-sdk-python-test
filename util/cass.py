@@ -33,25 +33,30 @@ class CassetteRequest:
         return self.__request.body
 
     def get_header_value(self, header: str) -> Optional[str]:
-        bs: bytes = self.__request.headers.get(header)
-        if bs is None:
-            return None
-        return bs.decode('utf-8')
+        for k, v in self.__request.headers.items():
+            if k.lower() == header.lower():
+                if isinstance(v, str):
+                    return v
+                if isinstance(v, bytes):
+                    return v.decode('utf-8')
+                raise Exception('Unknown type')
+        return None
 
     @property
     def url(self) -> ParseResult:
-        a = urlparse(self.__request.url)
-        print(a)
-        return a
+        return urlparse(self.__request.url)
 
 
 class ResponseBody:
-    def __init__(self, body: Dict[str, Any]):
+    def __init__(self, body: Any):
         self.__body = body
 
     @property
     def as_str(self) -> str:
-        return self.__body['string'].decode('utf-8')
+        try:
+            return self.__body['string'].decode('utf-8')
+        except TypeError:
+            return self.__body.decode('utf-8')
 
     @property
     def as_json(self) -> Dict[str, Any]:

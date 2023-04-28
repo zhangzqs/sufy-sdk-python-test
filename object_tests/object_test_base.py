@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 
 import sufycore.session
@@ -42,6 +43,10 @@ class BaseObjectTest(unittest.TestCase):
             record_mode=test_config.vcr.record_mode,
             match_on=test_config.vcr.match_on,
         )
+        try:
+            shutil.rmtree(self.test_config.vcr.cassette_library_dir)
+        except FileNotFoundError:
+            pass
 
     def check_public_request_header(self, request: CassetteRequest):
         host = request.url.hostname

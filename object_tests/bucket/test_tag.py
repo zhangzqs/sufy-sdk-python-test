@@ -3,8 +3,8 @@ from util.cass import CassetteUtils
 
 
 class TestTag(BaseObjectTest):
-    def __init__(self):
-        super().__init__()
+    def setUp(self):
+        super().setUp()
         self.__tagging = {
             'tagSet': [
                 {
@@ -19,8 +19,9 @@ class TestTag(BaseObjectTest):
         }
 
     def test_get_bucket_tagging_when_no_tagging(self):
+        self.object_service.delete_bucket_tagging(bucket=self.bucket_name)
+
         def run():
-            self.object_service.delete_bucket_tagging(bucket=self.bucket_name)
             with self.assertRaises(Exception) as e:
                 self.object_service.get_bucket_tagging(bucket=self.bucket_name)
 

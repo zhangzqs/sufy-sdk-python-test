@@ -7,8 +7,8 @@ from util.cass import CassetteUtils
 
 
 class TestBucketPolicy(BaseObjectTest):
-    def __init__(self):
-        super().__init__()
+    def setUp(self):
+        super().setUp()
         self.__policy = """
     "Version": "sufy",
     "Id": "public",
@@ -25,6 +25,8 @@ class TestBucketPolicy(BaseObjectTest):
         """ % self.bucket_name
 
     def test_put_bucket_policy(self):
+        # TODO: botocore.exceptions.ClientError: An error occurred (InvalidPolicySyntax) when calling the
+        #  PutBucketPolicy operation: json: cannot unmarshal string into Go value of type policy.BucketPolicy
         def run():
             r = self.object_service.put_bucket_policy(
                 bucket=self.bucket_name,
