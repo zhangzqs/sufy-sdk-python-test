@@ -18,10 +18,10 @@ class ListObjectTest(BaseObjectTest):
 
         def run():
             resp1 = self.object_service.list_objects(
-                bucket=self.bucket_name,
-                prefix=prefix,
-                delimiter=delimiter,
-                maxKeys=7,
+                Bucket=self.bucket_name,
+                Prefix=prefix,
+                Delimiter=delimiter,
+                MaxKeys=7,
             )
 
             self.assertEqual(self.bucket_name, resp1['name'])
@@ -45,11 +45,11 @@ class ListObjectTest(BaseObjectTest):
             self.assertEqual(subdir, common_prefixes[0]['prefix'])
 
             resp2 = self.object_service.list_objects(
-                bucket=self.bucket_name,
-                prefix=prefix,
-                delimiter=delimiter,
-                maxKeys=7,
-                marker=resp1['nextMarker'],
+                Bucket=self.bucket_name,
+                Prefix=prefix,
+                Delimiter=delimiter,
+                MaxKeys=7,
+                Marker=resp1['nextMarker'],
             )
 
             self.assertEqual(self.bucket_name, resp2['name'])
@@ -102,10 +102,10 @@ class ListObjectTest(BaseObjectTest):
 
         def run():
             resp1 = self.object_service.list_objects_v2(
-                bucket=self.bucket_name,
-                prefix=prefix,
-                delimiter=delimiter,
-                maxKeys=7,
+                Bucket=self.bucket_name,
+                Prefix=prefix,
+                Delimiter=delimiter,
+                MaxKeys=7,
             )
 
             self.assertEqual(self.bucket_name, resp1['name'])
@@ -130,11 +130,11 @@ class ListObjectTest(BaseObjectTest):
             self.assertEqual(subdir, common_prefixes[0]['prefix'])
 
             resp2 = self.object_service.list_objects_v2(
-                bucket=self.bucket_name,
-                prefix=prefix,
-                delimiter=delimiter,
-                maxKeys=7,
-                continuationToken=resp1['nextContinuationToken'],
+                Bucket=self.bucket_name,
+                Prefix=prefix,
+                Delimiter=delimiter,
+                MaxKeys=7,
+                ContinuationToken=resp1['nextContinuationToken'],
             )
 
             self.assertEqual(self.bucket_name, resp2['name'])

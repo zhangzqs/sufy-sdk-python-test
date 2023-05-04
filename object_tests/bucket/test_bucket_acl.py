@@ -10,7 +10,7 @@ class TestBucketAcl(BaseObjectTest):
         def run():
             with self.assertRaises(ClientError):
                 self.object_service.put_bucket_acl(
-                    bucket=self.bucket_name,
+                    Bucket=self.bucket_name,
                 )
 
         with self.vcr.use_cassette('test_put_bucket_acl.yaml') as cass:  # type: Cassette
@@ -31,7 +31,7 @@ class TestBucketAcl(BaseObjectTest):
     def test_get_bucket_acl(self):
         def run():
             try:
-                self.object_service.get_bucket_acl(bucket=self.bucket_name)
+                self.object_service.get_bucket_acl(Bucket=self.bucket_name)
                 self.fail('Expected ClientError to be raised')
             except ClientError as e:
                 pass

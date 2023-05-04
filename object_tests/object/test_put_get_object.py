@@ -9,9 +9,9 @@ class PutGetObjectTest(BaseObjectTest):
         def run():
             with self.assertRaises(ParamValidationError):
                 self.object_service.put_object(
-                    key='',
-                    bucket=self.bucket_name,
-                    body='',
+                    Key='',
+                    Bucket=self.bucket_name,
+                    Body='',
                 )
 
         run()
@@ -28,11 +28,11 @@ class PutGetObjectTest(BaseObjectTest):
 
         def run():
             put_object_response = self.object_service.put_object(
-                key=key,
-                bucket=self.bucket_name,
-                body=content,
+                Key=key,
+                Bucket=self.bucket_name,
+                Body=content,
                 metadata=metadata,
-                storageClass=storage_class,
+                StorageClass=storage_class,
                 contentType=content_type,
             )
             self.assertIsNotNone(put_object_response)
@@ -71,16 +71,16 @@ class PutGetObjectTest(BaseObjectTest):
             'test-key2': 'test-value2',
         }
         self.object_service.put_object(
-            key=key,
-            bucket=self.bucket_name,
-            body=content,
+            Key=key,
+            Bucket=self.bucket_name,
+            Body=content,
             metadata=metadata,
         )
 
         def run():
             get_object_response = self.object_service.get_object(
-                key=key,
-                bucket=self.bucket_name,
+                Key=key,
+                Bucket=self.bucket_name,
             )
             self.assertIsNotNone(get_object_response)
             self.assertIsNotNone(get_object_response['eTag'])
@@ -128,16 +128,16 @@ class PutGetObjectTest(BaseObjectTest):
             'test-key2': 'test-value2',
         }
         self.object_service.put_object(
-            key=key,
-            bucket=self.bucket_name,
-            body=content,
+            Key=key,
+            Bucket=self.bucket_name,
+            Body=content,
             metadata=metadata,
         )
 
         def run():
             get_object_response = self.object_service.head_object(
-                key=key,
-                bucket=self.bucket_name,
+                Key=key,
+                Bucket=self.bucket_name,
             )
             self.assertIsNotNone(get_object_response)
             self.assertIsNotNone(get_object_response['eTag'])

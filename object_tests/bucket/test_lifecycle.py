@@ -31,8 +31,8 @@ class TestLifecycle(BaseObjectTest):
     def test_put_lifecycle_configuration(self):
         def run():
             self.object_service.put_bucket_lifecycle_configuration(
-                bucket=self.bucket_name,
-                lifecycleConfiguration=self.__lifecycle_configuration,
+                Bucket=self.bucket_name,
+                LifecycleConfiguration=self.__lifecycle_configuration,
             )
 
         with self.vcr.use_cassette('test_put_lifecycle.yaml') as cass:
@@ -52,14 +52,14 @@ class TestLifecycle(BaseObjectTest):
 
     def test_get_lifecycle(self):
         # 先删除原来的生命周期配置
-        self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
+        self.object_service.delete_bucket_lifecycle(Bucket=self.bucket_name)
         # 再创建新的生命周期配置
         self.object_service.put_bucket_lifecycle_configuration(
-            bucket=self.bucket_name,
-            lifecycleConfiguration=self.__lifecycle_configuration,
+            Bucket=self.bucket_name,
+            LifecycleConfiguration=self.__lifecycle_configuration,
         )
         def run():
-            get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle_configuration(bucket=self.bucket_name)
+            get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle_configuration(Bucket=self.bucket_name)
             # TODO: 服务器暂时不支持status属性
             actual_rule = get_bucket_lifecycle_resp['rules'][0]
             expected_rule = self.__lifecycle_configuration['rules'][0]
@@ -82,11 +82,11 @@ class TestLifecycle(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_lifecycle_when_no_lifecycle(self):
-        self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
+        self.object_service.delete_bucket_lifecycle(Bucket=self.bucket_name)
 
         def run():
             with self.assertRaises(ClientError):
-                self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
+                self.object_service.get_bucket_lifecycle(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_get_lifecycle_when_no_lifecycle.yaml') as cass:
             run()
@@ -105,9 +105,9 @@ class TestLifecycle(BaseObjectTest):
 
     def test_delete_lifecycle(self):
         def run():
-            self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
+            self.object_service.delete_bucket_lifecycle(Bucket=self.bucket_name)
             with self.assertRaises(ClientError):
-                self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
+                self.object_service.get_bucket_lifecycle(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_delete_lifecycle.yaml') as cass:
             run()

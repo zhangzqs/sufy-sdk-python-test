@@ -11,8 +11,8 @@ class MultipartUploadTest(BaseObjectTest):
 
         def run():
             resp = self.object_service.create_multipart_upload(
-                bucket=self.bucket_name,
-                key=key,
+                Bucket=self.bucket_name,
+                Key=key,
                 contentType=content_type,
             )
             self.assertIsNotNone(resp)
@@ -41,18 +41,18 @@ class MultipartUploadTest(BaseObjectTest):
         key = 'test_upload_part'
         content_type = 'application/octet-stream'
         upload_id = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
         )['uploadId']
 
         def run():
             put_object_response = self.object_service.upload_part(
-                key=key,
-                bucket=self.bucket_name,
-                uploadId=upload_id,
-                partNumber=1,
-                body=self.random_bytes(1024),
+                Key=key,
+                Bucket=self.bucket_name,
+                UploadId=upload_id,
+                PartNumber=1,
+                Body=self.random_bytes(1024),
             )
             self.assertIsNotNone(put_object_response)
             self.assertIsNotNone(put_object_response['eTag'])
@@ -65,7 +65,7 @@ class MultipartUploadTest(BaseObjectTest):
             self.check_public_request_header(req)
             self.assertEqual('PUT', req.method)
             self.assertEqual('/' + self.bucket_name + '/' + key, req.url.path)
-            self.assertEqual('uploadId=' + upload_id + '&partNumber=1', req.url.query)
+            self.assertEqual('UploadId=' + upload_id + '&PartNumber=1', req.url.query)
 
             resp = cu.response()
             self.check_public_response_header(resp)
@@ -79,8 +79,8 @@ class MultipartUploadTest(BaseObjectTest):
         parts = 2
         part_size = 5 * 1024 * 1024
         upload_id = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
         )['uploadId']
 
@@ -90,11 +90,11 @@ class MultipartUploadTest(BaseObjectTest):
             part_content = self.random_bytes(part_size)
             contents += part_content
             part_number_2_etag[part_number] = self.object_service.upload_part(
-                key=key,
-                bucket=self.bucket_name,
-                uploadId=upload_id,
-                partNumber=part_number,
-                body=part_content,
+                Key=key,
+                Bucket=self.bucket_name,
+                UploadId=upload_id,
+                PartNumber=part_number,
+                Body=part_content,
             )['eTag']
 
         e_tag = ''
@@ -102,10 +102,10 @@ class MultipartUploadTest(BaseObjectTest):
         def run():
             nonlocal e_tag
             resp = self.object_service.complete_multipart_upload(
-                bucket=self.bucket_name,
-                key=key,
-                uploadId=upload_id,
-                multipartUpload={
+                Bucket=self.bucket_name,
+                Key=key,
+                UploadId=upload_id,
+                MultipartUpload={
                     'parts': list(map(
                         lambda x: {'partNumber': x, 'eTag': part_number_2_etag[x]},
                         range(1, 1 + parts),
@@ -126,7 +126,7 @@ class MultipartUploadTest(BaseObjectTest):
             self.check_public_request_header(req)
             self.assertEqual('POST', req.method)
             self.assertEqual('/' + self.bucket_name + '/' + key, req.url.path)
-            self.assertEqual('uploadId=' + upload_id, req.url.query)
+            self.assertEqual('UploadId=' + upload_id, req.url.query)
 
             resp = cu.response()
             self.check_public_response_header(resp)
@@ -135,8 +135,8 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 获取文件内容，判断是否与上传的内容一致
         resp = self.object_service.get_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
         )
         self.assertEqual(resp['contentLength'], parts * part_size)
         self.assertEqual(resp['contentType'], content_type)
@@ -150,8 +150,8 @@ class MultipartUploadTest(BaseObjectTest):
         part_size = 5 * 1024 * 1024
 
         upload_id = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
         )['uploadId']
 
@@ -159,20 +159,20 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 上传一个文件
         self.object_service.put_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
-            body=bs,
+            Body=bs,
         )
 
         part_number_2_etag: Dict[int, str] = {}
 
         for i in range(1, parts + 1):
             resp = self.object_service.upload_part_copy(
-                key=key,
-                bucket=self.bucket_name,
-                uploadId=upload_id,
-                partNumber=i,
+                Key=key,
+                Bucket=self.bucket_name,
+                UploadId=upload_id,
+                PartNumber=i,
                 copySource=f'{self.bucket_name}/{key}',
                 copySourceRange=f'bytes={0}-{part_size - 1}',
             )
@@ -182,10 +182,10 @@ class MultipartUploadTest(BaseObjectTest):
             part_number_2_etag[i] = etag
 
         complete_resp = self.object_service.complete_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
-            uploadId=upload_id,
-            multipartUpload={
+            Bucket=self.bucket_name,
+            Key=key,
+            UploadId=upload_id,
+            MultipartUpload={
                 'parts': list(map(
                     lambda x: {'partNumber': x, 'eTag': part_number_2_etag[x]},
                     range(1, 1 + parts),
@@ -195,8 +195,8 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 获取文件内容，判断是否与上传的内容一致
         resp = self.object_service.get_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
         )
 
         self.assertEqual(resp['contentLength'], parts * part_size)
@@ -210,8 +210,8 @@ class MultipartUploadTest(BaseObjectTest):
         part_size = 5 * 1024 * 1024
 
         upload_id = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
         )['uploadId']
 
@@ -219,18 +219,18 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 上传一个文件
         self.object_service.put_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
-            body=bs,
+            Body=bs,
         )
 
         # 拷贝分片
         resp = self.object_service.upload_part_copy(
-            key=key,
-            bucket=self.bucket_name,
-            uploadId=upload_id,
-            partNumber=1,
+            Key=key,
+            Bucket=self.bucket_name,
+            UploadId=upload_id,
+            PartNumber=1,
             copySource=f'{self.bucket_name}/{key}',
             copySourceRange=f'bytes={0}-{part_size - 1}',
         )
@@ -243,9 +243,9 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 中止分片上传
         self.object_service.abort_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
-            uploadId=upload_id,
+            Bucket=self.bucket_name,
+            Key=key,
+            UploadId=upload_id,
         )
 
     def test_list_parts(self):
@@ -258,8 +258,8 @@ class MultipartUploadTest(BaseObjectTest):
         part_size = 5 * 1024 * 1024
 
         upload_id = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
         )['uploadId']
 
@@ -267,10 +267,10 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 上传一个文件
         self.object_service.put_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
-            body=bs,
+            Body=bs,
         )
 
         part_number_2_etag: Dict[int, str] = {}
@@ -278,10 +278,10 @@ class MultipartUploadTest(BaseObjectTest):
         # 拷贝这么多分片
         for i in range(1, parts):
             resp = self.object_service.upload_part_copy(
-                key=key,
-                bucket=self.bucket_name,
-                uploadId=upload_id,
-                partNumber=i,
+                Key=key,
+                Bucket=self.bucket_name,
+                UploadId=upload_id,
+                PartNumber=i,
                 copySource=f'{self.bucket_name}/{key}',
                 copySourceRange=f'bytes={0}-{part_size - 1}',
             )
@@ -292,11 +292,11 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 再上传一个分片
         resp = self.object_service.upload_part(
-            key=key,
-            bucket=self.bucket_name,
-            uploadId=upload_id,
-            partNumber=parts,
-            body=bs,
+            Key=key,
+            Bucket=self.bucket_name,
+            UploadId=upload_id,
+            PartNumber=parts,
+            Body=bs,
         )
         self.assertIsNotNone(resp)
         etag = resp['eTag']
@@ -305,10 +305,10 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 列出所有分片
         resp = self.object_service.list_parts(
-            bucket=self.bucket_name,
-            key=key,
-            uploadId=upload_id,
-            maxParts=parts,
+            Bucket=self.bucket_name,
+            Key=key,
+            UploadId=upload_id,
+            MaxParts=parts,
         )
         self.assertEqual(resp['bucket'], self.bucket_name)
         self.assertEqual(resp['key'], key)
@@ -336,61 +336,61 @@ class MultipartUploadTest(BaseObjectTest):
 
         # 先上传一个文件
         self.object_service.put_object(
-            bucket=self.bucket_name,
-            key=key,
+            Bucket=self.bucket_name,
+            Key=key,
             contentType=content_type,
-            body=bs,
+            Body=bs,
         )
 
         # 创建第一个分片上传任务
         upload_id1 = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key1,
+            Bucket=self.bucket_name,
+            Key=key1,
             contentType=content_type,
         )['uploadId']
 
         # 拷贝分片
         self.object_service.upload_part_copy(
-            key=key1,
-            bucket=self.bucket_name,
-            uploadId=upload_id1,
-            partNumber=1,
+            Key=key1,
+            Bucket=self.bucket_name,
+            UploadId=upload_id1,
+            PartNumber=1,
             copySource=f'{self.bucket_name}/{key}',
             copySourceRange=f'bytes={0}-{part_size - 1}',
         )
 
         # 创建第二个分片上传任务
         upload_id2 = self.object_service.create_multipart_upload(
-            bucket=self.bucket_name,
-            key=key2,
+            Bucket=self.bucket_name,
+            Key=key2,
             contentType=content_type,
         )['uploadId']
 
         # 拷贝分片
         for i in range(1, 3):
             self.object_service.upload_part_copy(
-                key=key2,
-                bucket=self.bucket_name,
-                uploadId=upload_id2,
-                partNumber=i,
+                Key=key2,
+                Bucket=self.bucket_name,
+                UploadId=upload_id2,
+                PartNumber=i,
                 copySource=f'{self.bucket_name}/{key}',
                 copySourceRange=f'bytes={0}-{part_size - 1}',
             )
 
         # 列举bucket级别正在进行的分片
         resp = self.object_service.list_multipart_uploads(
-            bucket=self.bucket_name,
-            maxUploads=2,
-            prefix=prefix,
+            Bucket=self.bucket_name,
+            MaxUploads=2,
+            Prefix=prefix,
         )
         multipart_uploads = resp['uploads']
         while resp['isTruncated']:
             resp = self.object_service.list_multipart_uploads(
-                bucket=self.bucket_name,
-                maxUploads=2,
-                prefix=prefix,
-                keyMarker=resp['nextKeyMarker'],
-                uploadIdMarker=resp['nextUploadIdMarker'],
+                Bucket=self.bucket_name,
+                MaxUploads=2,
+                Prefix=prefix,
+                KeyMarker=resp['nextKeyMarker'],
+                UploadIdMarker=resp['nextUploadIdMarker'],
             )
             multipart_uploads.extend(resp['uploads'])
 

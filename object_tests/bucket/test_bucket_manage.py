@@ -10,8 +10,8 @@ class BucketManageTest(BaseObjectTest):
 
         def run():
             resp = self.object_service.create_bucket(
-                bucket=self.bucket_name,
-                createBucketConfiguration={
+                Bucket=self.bucket_name,
+                CreateBucketConfiguration={
                     'locationConstraint': self.test_config.object.region,
                 },
             )
@@ -37,7 +37,7 @@ class BucketManageTest(BaseObjectTest):
     def test_head_bucket(self):
         def run():
             resp = self.object_service.head_bucket(
-                bucket=self.bucket_name,
+                Bucket=self.bucket_name,
             )
             # TODO：缺字段
             # self.assertIsNotNone(resp['location'])
@@ -60,7 +60,7 @@ class BucketManageTest(BaseObjectTest):
     def test_get_bucket_location(self):
         def run():
             resp = self.object_service.get_bucket_location(
-                bucket=self.bucket_name,
+                Bucket=self.bucket_name,
             )
             self.assertIsNotNone(resp['locationConstraint'])
 
@@ -85,7 +85,7 @@ class BucketManageTest(BaseObjectTest):
 
         def run():
             self.object_service.delete_bucket(
-                bucket=self.bucket_name,
+                Bucket=self.bucket_name,
             )
 
         with self.vcr.use_cassette('test_delete_bucket.yaml') as cass:
@@ -104,5 +104,5 @@ class BucketManageTest(BaseObjectTest):
 
         # 此时应当不存在该bucket
         with self.assertRaises(ClientError) as e:
-            self.object_service.head_bucket(bucket=self.bucket_name)
+            self.object_service.head_bucket(Bucket=self.bucket_name)
 

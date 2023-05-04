@@ -23,7 +23,7 @@ class TestCors(BaseObjectTest):
     def test_put_cors(self):
         def run():
             self.object_service.put_bucket_cors(
-                bucket=self.bucket_name,
+                Bucket=self.bucket_name,
                 CORSConfiguration=self.__cors_configuration,
             )
 
@@ -46,12 +46,12 @@ class TestCors(BaseObjectTest):
 
     def test_get_cors(self):
         self.object_service.put_bucket_cors(
-            bucket=self.bucket_name,
+            Bucket=self.bucket_name,
             CORSConfiguration=self.__cors_configuration,
         )
 
         def run():
-            get_bucket_cors_resp = self.object_service.get_bucket_cors(bucket=self.bucket_name)
+            get_bucket_cors_resp = self.object_service.get_bucket_cors(Bucket=self.bucket_name)
             self.assertListEqual(self.__cors_configuration['CORSRules'], get_bucket_cors_resp['CORSRules'])
 
         with self.vcr.use_cassette('test_get_cors.yaml') as cass:
@@ -71,11 +71,11 @@ class TestCors(BaseObjectTest):
 
     def test_get_cors_when_no_cors(self):
         # 先删除CORS
-        self.object_service.delete_bucket_cors(bucket=self.bucket_name)
+        self.object_service.delete_bucket_cors(Bucket=self.bucket_name)
 
         def run():
             with self.assertRaises(ClientError):
-                self.object_service.get_bucket_cors(bucket=self.bucket_name)
+                self.object_service.get_bucket_cors(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_get_cors_when_no_cors.yaml') as cass:
             run()
@@ -94,7 +94,7 @@ class TestCors(BaseObjectTest):
 
     def test_delete_cors(self):
         def run():
-            self.object_service.delete_bucket_cors(bucket=self.bucket_name)
+            self.object_service.delete_bucket_cors(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_delete_cors.yaml') as cass:
             run()

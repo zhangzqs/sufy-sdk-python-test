@@ -13,8 +13,8 @@ class ObjectManageTest(BaseObjectTest):
 
         def run():
             self.object_service.copy_object(
-                bucket=self.bucket_name,
-                key=dest_key,
+                Bucket=self.bucket_name,
+                Key=dest_key,
                 copySource=f"{self.bucket_name}/{src_key}",
                 metadataDirective=metadata_directive,
             )
@@ -40,8 +40,8 @@ class ObjectManageTest(BaseObjectTest):
             self.assertEqual("OK", resp.status_message)
 
         # 复制文件后，目标文件和源文件都存在
-        self.object_service.head_object(bucket=self.bucket_name, key=dest_key)
-        self.object_service.head_object(bucket=self.bucket_name, key=src_key)
+        self.object_service.head_object(Bucket=self.bucket_name, Key=dest_key)
+        self.object_service.head_object(Bucket=self.bucket_name, Key=src_key)
 
     def test_delete_object(self):
         key = "testDeleteObjectFileKey"
@@ -51,8 +51,8 @@ class ObjectManageTest(BaseObjectTest):
 
         def run():
             self.object_service.delete_object(
-                bucket=self.bucket_name,
-                key=key,
+                Bucket=self.bucket_name,
+                Key=key,
             )
 
         with self.vcr.use_cassette("object_delete_object.yaml") as cass:
@@ -72,8 +72,8 @@ class ObjectManageTest(BaseObjectTest):
         # 删除文件后，文件不存在
         with self.assertRaises(Exception):
             self.object_service.head_object(
-                bucket=self.bucket_name,
-                key=key,
+                Bucket=self.bucket_name,
+                Key=key,
             )
 
     def test_delete_objects(self):
@@ -86,8 +86,8 @@ class ObjectManageTest(BaseObjectTest):
 
         def run():
             self.object_service.delete_objects(
-                bucket=self.bucket_name,
-                delete={
+                Bucket=self.bucket_name,
+                Delete={
                     'objects': list(map(lambda x: {'key': x}, keys)),
                     'quiet': False,
                 },
@@ -112,8 +112,8 @@ class ObjectManageTest(BaseObjectTest):
         for key in keys:
             with self.assertRaises(Exception):
                 self.object_service.head_object(
-                    bucket=self.bucket_name,
-                    key=key,
+                    Bucket=self.bucket_name,
+                    Key=key,
                 )
 
     def test_restore_object(self):
@@ -121,17 +121,17 @@ class ObjectManageTest(BaseObjectTest):
         content = "testRestoreObjectFileContent"
 
         self.object_service.put_object(
-            bucket=self.bucket_name,
-            key=key,
-            body=content,
-            storageClass="DEEP_ARCHIVE",
+            Bucket=self.bucket_name,
+            Key=key,
+            Body=content,
+            StorageClass="DEEP_ARCHIVE",
         )
 
         def run():
             self.object_service.restore_object(
-                bucket=self.bucket_name,
-                key=key,
-                restoreRequest={
+                Bucket=self.bucket_name,
+                Key=key,
+                RestoreRequest={
                     'days': 1,
                 },
             )

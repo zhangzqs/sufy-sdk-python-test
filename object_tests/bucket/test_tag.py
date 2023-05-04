@@ -21,8 +21,8 @@ class TestTag(BaseObjectTest):
     def test_put_bucket_tagging(self):
         def run():
             self.object_service.put_bucket_tagging(
-                bucket=self.bucket_name,
-                tagging=self.__tagging,
+                Bucket=self.bucket_name,
+                Tagging=self.__tagging,
             )
 
         with self.vcr.use_cassette('test_put_bucket_tagging.yaml') as cass:
@@ -43,12 +43,12 @@ class TestTag(BaseObjectTest):
     def test_get_bucket_tagging(self):
 
         self.object_service.put_bucket_tagging(
-            bucket=self.bucket_name,
-            tagging=self.__tagging,
+            Bucket=self.bucket_name,
+            Tagging=self.__tagging,
         )
 
         def run():
-            get_bucket_tagging_resp = self.object_service.get_bucket_tagging(bucket=self.bucket_name)
+            get_bucket_tagging_resp = self.object_service.get_bucket_tagging(Bucket=self.bucket_name)
             self.assertDictEqual(self.__tagging, get_bucket_tagging_resp)
 
         with self.vcr.use_cassette('test_get_bucket_tagging.yaml') as cass:
@@ -67,11 +67,11 @@ class TestTag(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_bucket_tagging_when_no_tagging(self):
-        self.object_service.delete_bucket_tagging(bucket=self.bucket_name)
+        self.object_service.delete_bucket_tagging(Bucket=self.bucket_name)
 
         def run():
             with self.assertRaises(Exception) as e:
-                self.object_service.get_bucket_tagging(bucket=self.bucket_name)
+                self.object_service.get_bucket_tagging(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_get_bucket_tagging_when_no_tagging.yaml') as cass:
             run()
@@ -90,7 +90,7 @@ class TestTag(BaseObjectTest):
 
     def test_delete_bucket_tagging(self):
         def run():
-            self.object_service.delete_bucket_tagging(bucket=self.bucket_name)
+            self.object_service.delete_bucket_tagging(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_delete_bucket_tagging.yaml') as cass:
             run()

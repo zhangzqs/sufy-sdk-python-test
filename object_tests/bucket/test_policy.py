@@ -30,8 +30,8 @@ class TestBucketPolicy(BaseObjectTest):
         #  PutBucketPolicy operation: json: cannot unmarshal string into Go value of type policy.BucketPolicy
         def run():
             r = self.object_service.put_bucket_policy(
-                bucket=self.bucket_name,
-                policy=self.__policy,
+                Bucket=self.bucket_name,
+                Policy=self.__policy,
             )
             self.assertIsNotNone(r)
 
@@ -52,12 +52,12 @@ class TestBucketPolicy(BaseObjectTest):
 
     def test_get_bucket_policy(self):
         self.object_service.put_bucket_policy(
-            bucket=self.bucket_name,
-            policy=self.__policy,
+            Bucket=self.bucket_name,
+            Policy=self.__policy,
         )
 
         def run():
-            r = self.object_service.get_bucket_policy(bucket=self.bucket_name)
+            r = self.object_service.get_bucket_policy(Bucket=self.bucket_name)
             self.assertIsNotNone(r)
             self.assertDictEqual(json.loads(r['policy']), json.loads(self.__policy))
 
@@ -77,11 +77,11 @@ class TestBucketPolicy(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_bucket_policy_when_no_policy(self):
-        self.object_service.delete_bucket_policy(bucket=self.bucket_name)
+        self.object_service.delete_bucket_policy(Bucket=self.bucket_name)
 
         def run():
             with self.assertRaises(ClientError):
-                self.object_service.get_bucket_policy(bucket=self.bucket_name)
+                self.object_service.get_bucket_policy(Bucket=self.bucket_name)
 
         with self.vcr.use_cassette('test_get_bucket_policy_when_no_policy.yaml') as cass:
             run()
@@ -100,12 +100,12 @@ class TestBucketPolicy(BaseObjectTest):
 
     def test_delete_bucket_policy(self):
         self.object_service.put_bucket_policy(
-            bucket=self.bucket_name,
-            policy=self.__policy,
+            Bucket=self.bucket_name,
+            Policy=self.__policy,
         )
 
         def run():
-            r = self.object_service.delete_bucket_policy(bucket=self.bucket_name)
+            r = self.object_service.delete_bucket_policy(Bucket=self.bucket_name)
             self.assertIsNotNone(r)
 
         with self.vcr.use_cassette('test_delete_bucket_policy.yaml') as cass:
