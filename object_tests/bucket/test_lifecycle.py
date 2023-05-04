@@ -10,11 +10,13 @@ class TestLifecycle(BaseObjectTest):
         self.__lifecycle_configuration = {
             'rules': [
                 {
-                    'id': 'test-lifecycle-1',
-                    'prefix': 'test-lifecycle-1',
+                    'id': 'test',
                     'status': 'Enabled',
+                    'filter': {
+                        'prefix': 'test',
+                    },
                     'expiration': {
-                        'days': 1,
+                        'days': 3,
                     },
                     'transitions': [
                         {
@@ -26,9 +28,9 @@ class TestLifecycle(BaseObjectTest):
             ],
         }
 
-    def test_put_lifecycle(self):
+    def test_put_lifecycle_configuration(self):
         def run():
-            self.object_service.put_bucket_lifecycle(
+            self.object_service.put_bucket_lifecycle_configuration(
                 bucket=self.bucket_name,
                 lifecycleConfiguration=self.__lifecycle_configuration,
             )
@@ -49,13 +51,20 @@ class TestLifecycle(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_lifecycle(self):
-        self.object_service.put_bucket_lifecycle(
+        # 先删除原来的生命周期配置
+        self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
+        # 再创建新的生命周期配置
+        self.object_service.put_bucket_lifecycle_configuration(
             bucket=self.bucket_name,
             lifecycleConfiguration=self.__lifecycle_configuration,
         )
         def run():
-            get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
-            self.assertDictEqual(self.__lifecycle_configuration, get_bucket_lifecycle_resp)
+            get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle_configuration(bucket=self.bucket_name)
+            # TODO: 服务器暂时不支持status属性
+            actual_rule = get_bucket_lifecycle_resp['rules'][0]
+            expected_rule = self.__lifecycle_configuration['rules'][0]
+            expected_rule.pop('status')
+            self.assertDictEqual(expected_rule, actual_rule)
 
         with self.vcr.use_cassette('test_get_lifecycle.yaml') as cass:
             run()

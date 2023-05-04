@@ -41,11 +41,13 @@ class TestTag(BaseObjectTest):
             self.assertEqual('No Content', resp.status_message)
 
     def test_get_bucket_tagging(self):
+
+        self.object_service.put_bucket_tagging(
+            bucket=self.bucket_name,
+            tagging=self.__tagging,
+        )
+
         def run():
-            self.object_service.put_bucket_tagging(
-                bucket=self.bucket_name,
-                tagging=self.__tagging,
-            )
             get_bucket_tagging_resp = self.object_service.get_bucket_tagging(bucket=self.bucket_name)
             self.assertDictEqual(self.__tagging, get_bucket_tagging_resp)
 

@@ -10,6 +10,7 @@ class TestBucketPolicy(BaseObjectTest):
     def setUp(self):
         super().setUp()
         self.__policy = """
+{
     "Version": "sufy",
     "Id": "public",
     "Statement": [
@@ -47,14 +48,15 @@ class TestBucketPolicy(BaseObjectTest):
             resp = cu.response()
             self.check_public_response_header(resp)
             self.assertEqual(204, resp.status_code)
-            self.assertEqual('OK', resp.status_message)
+            self.assertEqual('No Content', resp.status_message)
 
     def test_get_bucket_policy(self):
+        self.object_service.put_bucket_policy(
+            bucket=self.bucket_name,
+            policy=self.__policy,
+        )
+
         def run():
-            self.object_service.put_bucket_policy(
-                bucket=self.bucket_name,
-                policy=self.__policy,
-            )
             r = self.object_service.get_bucket_policy(bucket=self.bucket_name)
             self.assertIsNotNone(r)
             self.assertDictEqual(json.loads(r['policy']), json.loads(self.__policy))
@@ -75,8 +77,9 @@ class TestBucketPolicy(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_bucket_policy_when_no_policy(self):
+        self.object_service.delete_bucket_policy(bucket=self.bucket_name)
+
         def run():
-            self.object_service.delete_bucket_policy(bucket=self.bucket_name)
             with self.assertRaises(ClientError):
                 self.object_service.get_bucket_policy(bucket=self.bucket_name)
 
@@ -96,11 +99,12 @@ class TestBucketPolicy(BaseObjectTest):
             self.assertEqual('Not Found', resp.status_message)
 
     def test_delete_bucket_policy(self):
+        self.object_service.put_bucket_policy(
+            bucket=self.bucket_name,
+            policy=self.__policy,
+        )
+
         def run():
-            self.object_service.put_bucket_policy(
-                bucket=self.bucket_name,
-                policy=self.__policy,
-            )
             r = self.object_service.delete_bucket_policy(bucket=self.bucket_name)
             self.assertIsNotNone(r)
 
@@ -117,4 +121,4 @@ class TestBucketPolicy(BaseObjectTest):
             resp = cu.response()
             self.check_public_response_header(resp)
             self.assertEqual(204, resp.status_code)
-            self.assertEqual('OK', resp.status_message)
+            self.assertEqual('No Content', resp.status_message)
