@@ -4,3 +4,5 @@ resources/test-config.yaml
 .pytest_cache
 test_*.yaml
 __pycache__/
+.vscode
+__vcr_cassettes__/

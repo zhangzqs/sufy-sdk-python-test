@@ -6,7 +6,7 @@ import sufycore.session
 import vcr
 import yaml
 from botocore.exceptions import ClientError
-from sufycore.config import Config
+from botocore.config import Config
 
 from config import TestConfig
 from resources import test_config_file_path
@@ -47,6 +47,10 @@ class BaseObjectTest(unittest.TestCase):
             shutil.rmtree(self.test_config.vcr.cassette_library_dir)
         except FileNotFoundError:
             pass
+
+        # 测试环境每个测试用例开始前都确保bucket存在并清空所有文件
+        self.make_sure_bucket_exists()
+        self.clean_all_files()
 
     def check_public_request_header(self, request: CassetteRequest):
         host = request.url.hostname
@@ -89,10 +93,12 @@ class BaseObjectTest(unittest.TestCase):
                 bucket=self.bucket_name,
             )
         except ClientError as e:
-            if e.response['Error']['Code'] == 'NoSuchBucket':
+            if e.response['Error']['Code'] == '404':
                 self.object_service.create_bucket(
                     bucket=self.bucket_name,
-                    locationConstraint=self.test_config.object.region,
+                    createBucketConfiguration={
+                        'locationConstraint': self.test_config.object.region,
+                    },
                 )
             else:
                 raise
@@ -101,8 +107,26 @@ class BaseObjectTest(unittest.TestCase):
         return os.urandom(size)
 
     def clean_all_files(self):
-        for key in self.object_service.list_objects(bucket=self.bucket_name):
-            self.object_service.delete_object(bucket=self.bucket_name, key=key)
+        # 循环列举bucket的所有文件
+        continuation_token = ''
+        while True:
+            list_resp = self.object_service.list_objects_v2(
+                bucket=self.bucket_name,
+                continuationToken=continuation_token,
+            )
+
+            # 使用批量删除接口删除所有文件
+            if len(list_resp['contents']) > 0:
+                self.object_service.delete_objects(
+                    bucket=self.bucket_name,
+                    delete={
+                        'objects': [{'key': item['key']} for item in list_resp['contents']],
+                    },
+                )
+
+            if not list_resp['isTruncated']:
+                break
+            continuation_token = list_resp['nextContinuationToken']
 
     def force_delete_bucket(self):
         try:

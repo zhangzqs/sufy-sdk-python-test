@@ -15,7 +15,7 @@ class TestCors(BaseObjectTest):
                     'allowedMethods': ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
                     'allowedOrigins': ['http://www.a.com'],
                     'exposeHeaders': ["x-sufy-meta-abc", "x-sufy-meta-data"],
-                    'maxAgeSeconds': 3000,
+                    'maxAgeSeconds': 100,
                 },
             ],
         }
@@ -70,6 +70,9 @@ class TestCors(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_cors_when_no_cors(self):
+        # 先删除CORS
+        self.object_service.delete_bucket_cors(bucket=self.bucket_name)
+
         def run():
             with self.assertRaises(ClientError):
                 self.object_service.get_bucket_cors(bucket=self.bucket_name)

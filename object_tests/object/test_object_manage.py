@@ -123,7 +123,7 @@ class ObjectManageTest(BaseObjectTest):
         self.object_service.put_object(
             bucket=self.bucket_name,
             key=key,
-            content=content,
+            body=content,
             storageClass="DEEP_ARCHIVE",
         )
 

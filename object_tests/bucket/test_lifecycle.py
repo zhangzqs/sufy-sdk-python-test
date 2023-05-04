@@ -5,8 +5,8 @@ from util.cass import CassetteUtils
 
 
 class TestLifecycle(BaseObjectTest):
-    def __init__(self):
-        super().__init__()
+    def setUp(self):
+        super().setUp()
         self.__lifecycle_configuration = {
             'rules': [
                 {
@@ -30,7 +30,7 @@ class TestLifecycle(BaseObjectTest):
         def run():
             self.object_service.put_bucket_lifecycle(
                 bucket=self.bucket_name,
-                lifecycle_configuration=self.__lifecycle_configuration,
+                lifecycleConfiguration=self.__lifecycle_configuration,
             )
 
         with self.vcr.use_cassette('test_put_lifecycle.yaml') as cass:
@@ -49,11 +49,11 @@ class TestLifecycle(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_lifecycle(self):
+        self.object_service.put_bucket_lifecycle(
+            bucket=self.bucket_name,
+            lifecycleConfiguration=self.__lifecycle_configuration,
+        )
         def run():
-            self.object_service.put_bucket_lifecycle(
-                bucket=self.bucket_name,
-                lifecycle_configuration=self.__lifecycle_configuration,
-            )
             get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
             self.assertDictEqual(self.__lifecycle_configuration, get_bucket_lifecycle_resp)
 
@@ -73,8 +73,9 @@ class TestLifecycle(BaseObjectTest):
             self.assertEqual('OK', resp.status_message)
 
     def test_get_lifecycle_when_no_lifecycle(self):
+        self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
+
         def run():
-            self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
             with self.assertRaises(ClientError):
                 self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
 
@@ -95,10 +96,6 @@ class TestLifecycle(BaseObjectTest):
 
     def test_delete_lifecycle(self):
         def run():
-            self.object_service.put_bucket_lifecycle(
-                bucket=self.bucket_name,
-                lifecycle_configuration=self.__lifecycle_configuration,
-            )
             self.object_service.delete_bucket_lifecycle(bucket=self.bucket_name)
             with self.assertRaises(ClientError):
                 self.object_service.get_bucket_lifecycle(bucket=self.bucket_name)
