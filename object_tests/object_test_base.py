@@ -1,4 +1,3 @@
-import logging
 import os
 import shutil
 import unittest
@@ -20,7 +19,7 @@ class BaseObjectTest(unittest.TestCase):
             test_config = TestConfig.from_dict(yaml.load(f, Loader=yaml.FullLoader))
             self.test_config = test_config
 
-        logging.basicConfig(level=logging.DEBUG)
+        # logging.basicConfig(level=logging.DEBUG)
 
         self.sufy_session = sufycore.session.Session()
 

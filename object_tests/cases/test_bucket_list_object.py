@@ -112,7 +112,6 @@ class ListObjectTest(BaseObjectTest):
             self.assertEqual(prefix, resp1['Prefix'])
             self.assertEqual(delimiter, resp1['Delimiter'])
             self.assertEqual(7, resp1['MaxKeys'])
-            print(resp1)
             self.assertGreater(len(resp1['NextContinuationToken']), 0)
             self.assertTrue(resp1['IsTruncated'])
 

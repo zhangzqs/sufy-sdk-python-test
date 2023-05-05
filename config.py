@@ -80,7 +80,7 @@ def test_load_config_file():
             'secretKey': '<secretKey>',
         },
         'object': {
-            'bucket': '<bucket>',
+            'cases': '<cases>',
             'region': '<region>',
             'endpoint': '<endpoint>',
             'forcePathStyle': True,
@@ -95,7 +95,7 @@ def test_load_config_file():
     config = TestConfig.from_dict(dic)
     assert config.auth.accessKey == '<accessKey>'
     assert config.auth.secretKey == '<secretKey>'
-    assert config.object.bucket == '<bucket>'
+    assert config.object.bucket == '<cases>'
     assert config.object.region == '<region>'
     assert config.object.endpoint == '<endpoint>'
     assert config.object.forcePathStyle is True
