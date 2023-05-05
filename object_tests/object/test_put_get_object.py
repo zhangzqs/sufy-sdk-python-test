@@ -31,9 +31,9 @@ class PutGetObjectTest(BaseObjectTest):
                 Key=key,
                 Bucket=self.bucket_name,
                 Body=content,
-                metadata=metadata,
+                Metadata=metadata,
                 StorageClass=storage_class,
-                contentType=content_type,
+                ContentType=content_type,
             )
             self.assertIsNotNone(put_object_response)
             self.assertIsNotNone(put_object_response['eTag'])
