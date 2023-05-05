@@ -36,7 +36,7 @@ class PutGetObjectTest(BaseObjectTest):
                 ContentType=content_type,
             )
             self.assertIsNotNone(put_object_response)
-            self.assertIsNotNone(put_object_response['eTag'])
+            self.assertIsNotNone(put_object_response['ETag'])
 
         with self.vcr.use_cassette('test_put_object.yaml') as cass:
             run()
@@ -74,7 +74,7 @@ class PutGetObjectTest(BaseObjectTest):
             Key=key,
             Bucket=self.bucket_name,
             Body=content,
-            metadata=metadata,
+            Metadata=metadata,
         )
 
         def run():
@@ -83,13 +83,13 @@ class PutGetObjectTest(BaseObjectTest):
                 Bucket=self.bucket_name,
             )
             self.assertIsNotNone(get_object_response)
-            self.assertIsNotNone(get_object_response['eTag'])
-            self.assertIsNotNone(get_object_response['contentLength'])
-            self.assertEqual(get_object_response['contentLength'], len(content))
-            self.assertIsNotNone(get_object_response['lastModified'])
+            self.assertIsNotNone(get_object_response['ETag'])
+            self.assertIsNotNone(get_object_response['ContentLength'])
+            self.assertEqual(get_object_response['ContentLength'], len(content))
+            self.assertIsNotNone(get_object_response['LastModified'])
             for k, v in metadata.items():
-                self.assertEqual(v, get_object_response['metadata'][k])
-            self.assertEqual(content, get_object_response['body'].read().decode('utf-8'))
+                self.assertEqual(v, get_object_response['Metadata'][k])
+            self.assertEqual(content, get_object_response['Body'].read().decode('utf-8'))
 
         with self.vcr.use_cassette('test_get_object.yaml') as cass:
             run()
@@ -131,7 +131,7 @@ class PutGetObjectTest(BaseObjectTest):
             Key=key,
             Bucket=self.bucket_name,
             Body=content,
-            metadata=metadata,
+            Metadata=metadata,
         )
 
         def run():
@@ -140,12 +140,12 @@ class PutGetObjectTest(BaseObjectTest):
                 Bucket=self.bucket_name,
             )
             self.assertIsNotNone(get_object_response)
-            self.assertIsNotNone(get_object_response['eTag'])
-            self.assertIsNotNone(get_object_response['contentLength'])
-            self.assertEqual(get_object_response['contentLength'], len(content))
-            self.assertIsNotNone(get_object_response['lastModified'])
+            self.assertIsNotNone(get_object_response['ETag'])
+            self.assertIsNotNone(get_object_response['ContentLength'])
+            self.assertEqual(get_object_response['ContentLength'], len(content))
+            self.assertIsNotNone(get_object_response['LastModified'])
             for k, v in metadata.items():
-                self.assertEqual(v, get_object_response['metadata'][k])
+                self.assertEqual(v, get_object_response['Metadata'][k])
 
         with self.vcr.use_cassette('test_head_object.yaml') as cass:
             run()

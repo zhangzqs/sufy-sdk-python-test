@@ -24,51 +24,51 @@ class ListObjectTest(BaseObjectTest):
                 MaxKeys=7,
             )
 
-            self.assertEqual(self.bucket_name, resp1['name'])
-            self.assertEqual(prefix, resp1['prefix'])
-            self.assertEqual(delimiter, resp1['delimiter'])
-            self.assertEqual(7, resp1['maxKeys'])
-            self.assertGreater(len(resp1['nextMarker']), 0)
-            self.assertTrue(resp1['isTruncated'])
+            self.assertEqual(self.bucket_name, resp1['Name'])
+            self.assertEqual(prefix, resp1['Prefix'])
+            self.assertEqual(delimiter, resp1['Delimiter'])
+            self.assertEqual(7, resp1['MaxKeys'])
+            self.assertGreater(len(resp1['NextMarker']), 0)
+            self.assertTrue(resp1['IsTruncated'])
 
-            contents = resp1['contents']
+            contents = resp1['Contents']
             self.assertEqual(6, len(contents))
             for content in contents:
-                self.assertGreater(len(content['key']), 0)
-                self.assertGreater(len(content['eTag']), 0)
-                self.assertIn(content['key'], keys)
-                self.assertIsNotNone(content['lastModified'])
-                self.assertEqual('STANDARD', content['storageClass'])
+                self.assertGreater(len(content['Key']), 0)
+                self.assertGreater(len(content['ETag']), 0)
+                self.assertIn(content['Key'], keys)
+                self.assertIsNotNone(content['LastModified'])
+                self.assertEqual('STANDARD', content['StorageClass'])
 
-            common_prefixes = resp1['commonPrefixes']
+            common_prefixes = resp1['CommonPrefixes']
             self.assertEqual(1, len(common_prefixes))
-            self.assertEqual(subdir, common_prefixes[0]['prefix'])
+            self.assertEqual(subdir, common_prefixes[0]['Prefix'])
 
             resp2 = self.object_service.list_objects(
                 Bucket=self.bucket_name,
                 Prefix=prefix,
                 Delimiter=delimiter,
                 MaxKeys=7,
-                Marker=resp1['nextMarker'],
+                Marker=resp1['NextMarker'],
             )
 
-            self.assertEqual(self.bucket_name, resp2['name'])
-            self.assertEqual(prefix, resp2['prefix'])
-            self.assertEqual(delimiter, resp2['delimiter'])
-            self.assertEqual(7, resp2['maxKeys'])
-            self.assertFalse(resp2['isTruncated'])
+            self.assertEqual(self.bucket_name, resp2['Name'])
+            self.assertEqual(prefix, resp2['Prefix'])
+            self.assertEqual(delimiter, resp2['Delimiter'])
+            self.assertEqual(7, resp2['MaxKeys'])
+            self.assertFalse(resp2['IsTruncated'])
 
-            contents = resp2['contents']
+            contents = resp2['Contents']
             self.assertEqual(4, len(contents))
             for content in contents:
-                self.assertGreater(len(content['key']), 0)
-                self.assertGreater(len(content['eTag']), 0)
-                self.assertIn(content['key'], keys)
-                self.assertIsNotNone(content['lastModified'])
-                self.assertEqual('STANDARD', content['storageClass'])
+                self.assertGreater(len(content['Key']), 0)
+                self.assertGreater(len(content['ETag']), 0)
+                self.assertIn(content['Key'], keys)
+                self.assertIsNotNone(content['LastModified'])
+                self.assertEqual('STANDARD', content['StorageClass'])
 
             try:
-                common_prefixes = resp2['commonPrefixes']
+                common_prefixes = resp2['CommonPrefixes']
                 self.assertEqual(0, len(common_prefixes))
             except KeyError as e:
                 pass
@@ -108,52 +108,52 @@ class ListObjectTest(BaseObjectTest):
                 MaxKeys=7,
             )
 
-            self.assertEqual(self.bucket_name, resp1['name'])
-            self.assertEqual(prefix, resp1['prefix'])
-            self.assertEqual(delimiter, resp1['delimiter'])
-            self.assertEqual(7, resp1['maxKeys'])
+            self.assertEqual(self.bucket_name, resp1['Name'])
+            self.assertEqual(prefix, resp1['Prefix'])
+            self.assertEqual(delimiter, resp1['Delimiter'])
+            self.assertEqual(7, resp1['MaxKeys'])
             print(resp1)
-            self.assertGreater(len(resp1['nextContinuationToken']), 0)
-            self.assertTrue(resp1['isTruncated'])
+            self.assertGreater(len(resp1['NextContinuationToken']), 0)
+            self.assertTrue(resp1['IsTruncated'])
 
-            contents = resp1['contents']
+            contents = resp1['Contents']
             self.assertEqual(6, len(contents))
             for content in contents:
-                self.assertGreater(len(content['key']), 0)
-                self.assertGreater(len(content['eTag']), 0)
-                self.assertIn(content['key'], keys)
-                self.assertIsNotNone(content['lastModified'])
-                self.assertEqual('STANDARD', content['storageClass'])
+                self.assertGreater(len(content['Key']), 0)
+                self.assertGreater(len(content['ETag']), 0)
+                self.assertIn(content['Key'], keys)
+                self.assertIsNotNone(content['LastModified'])
+                self.assertEqual('STANDARD', content['StorageClass'])
 
-            common_prefixes = resp1['commonPrefixes']
+            common_prefixes = resp1['CommonPrefixes']
             self.assertEqual(1, len(common_prefixes))
-            self.assertEqual(subdir, common_prefixes[0]['prefix'])
+            self.assertEqual(subdir, common_prefixes[0]['Prefix'])
 
             resp2 = self.object_service.list_objects_v2(
                 Bucket=self.bucket_name,
                 Prefix=prefix,
                 Delimiter=delimiter,
                 MaxKeys=7,
-                ContinuationToken=resp1['nextContinuationToken'],
+                ContinuationToken=resp1['NextContinuationToken'],
             )
 
-            self.assertEqual(self.bucket_name, resp2['name'])
-            self.assertEqual(prefix, resp2['prefix'])
-            self.assertEqual(delimiter, resp2['delimiter'])
-            self.assertEqual(7, resp2['maxKeys'])
-            self.assertFalse(resp2['isTruncated'])
+            self.assertEqual(self.bucket_name, resp2['Name'])
+            self.assertEqual(prefix, resp2['Prefix'])
+            self.assertEqual(delimiter, resp2['Delimiter'])
+            self.assertEqual(7, resp2['MaxKeys'])
+            self.assertFalse(resp2['IsTruncated'])
 
-            contents = resp2['contents']
+            contents = resp2['Contents']
             self.assertEqual(4, len(contents))
             for content in contents:
-                self.assertGreater(len(content['key']), 0)
-                self.assertGreater(len(content['eTag']), 0)
-                self.assertIn(content['key'], keys)
-                self.assertIsNotNone(content['lastModified'])
-                self.assertEqual('STANDARD', content['storageClass'])
+                self.assertGreater(len(content['Key']), 0)
+                self.assertGreater(len(content['ETag']), 0)
+                self.assertIn(content['Key'], keys)
+                self.assertIsNotNone(content['LastModified'])
+                self.assertEqual('STANDARD', content['StorageClass'])
 
             try:
-                common_prefixes = resp2['commonPrefixes']
+                common_prefixes = resp2['CommonPrefixes']
                 self.assertEqual(0, len(common_prefixes))
             except KeyError as e:
                 pass

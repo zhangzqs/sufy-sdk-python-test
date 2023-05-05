@@ -8,20 +8,20 @@ class TestLifecycle(BaseObjectTest):
     def setUp(self):
         super().setUp()
         self.__lifecycle_configuration = {
-            'rules': [
+            'Rules': [
                 {
-                    'id': 'test',
-                    'status': 'Enabled',
-                    'filter': {
-                        'prefix': 'test',
+                    'ID': 'test',
+                    'Status': 'Enabled',
+                    'Filter': {
+                        'Prefix': 'test',
                     },
-                    'expiration': {
-                        'days': 3,
+                    'Expiration': {
+                        'Days': 3,
                     },
-                    'transitions': [
+                    'Transitions': [
                         {
-                            'days': 1,
-                            'storageClass': 'DEEP_ARCHIVE',
+                            'Days': 1,
+                            'StorageClass': 'DEEP_ARCHIVE',
                         },
                     ],
                 },
@@ -58,12 +58,13 @@ class TestLifecycle(BaseObjectTest):
             Bucket=self.bucket_name,
             LifecycleConfiguration=self.__lifecycle_configuration,
         )
+
         def run():
             get_bucket_lifecycle_resp = self.object_service.get_bucket_lifecycle_configuration(Bucket=self.bucket_name)
+            actual_rule = get_bucket_lifecycle_resp['Rules'][0]
+            expected_rule = self.__lifecycle_configuration['Rules'][0]
             # TODO: 服务器暂时不支持status属性
-            actual_rule = get_bucket_lifecycle_resp['rules'][0]
-            expected_rule = self.__lifecycle_configuration['rules'][0]
-            expected_rule.pop('status')
+            expected_rule.pop('Status')
             self.assertDictEqual(expected_rule, actual_rule)
 
         with self.vcr.use_cassette('test_get_lifecycle.yaml') as cass:

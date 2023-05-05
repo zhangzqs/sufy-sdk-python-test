@@ -8,7 +8,7 @@ class ServiceApiTest(BaseObjectTest):
         for bucket in buckets:
             self.assertIsNotNone(bucket['Name'])
             self.assertIsNotNone(bucket['CreationDate'])
-            # self.assertIsNotNone(bucket['LocationConstraint'])
+            self.assertIsNotNone(bucket['LocationConstraint'])
 
         owner = resp['Owner']
         self.assertIn('ID', owner.keys())

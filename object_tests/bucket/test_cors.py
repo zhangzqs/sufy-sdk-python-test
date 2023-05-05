@@ -10,12 +10,12 @@ class TestCors(BaseObjectTest):
         self.__cors_configuration = {
             'CORSRules': [
                 {
-                    'id': 'test-cors-1',
-                    'allowedHeaders': ["x-sufy-meta-abc", "x-sufy-meta-data"],
-                    'allowedMethods': ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
-                    'allowedOrigins': ['http://www.a.com'],
-                    'exposeHeaders': ["x-sufy-meta-abc", "x-sufy-meta-data"],
-                    'maxAgeSeconds': 100,
+                    'ID': 'test-cors-1',
+                    'AllowedHeaders': ["x-sufy-meta-abc", "x-sufy-meta-data"],
+                    'AllowedMethods': ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],
+                    'AllowedOrigins': ['http://www.a.com'],
+                    'ExposeHeaders': ["x-sufy-meta-abc", "x-sufy-meta-data"],
+                    'MaxAgeSeconds': 100,
                 },
             ],
         }

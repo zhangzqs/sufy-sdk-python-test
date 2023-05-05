@@ -6,8 +6,8 @@ import unittest
 import sufycore.session
 import vcr
 import yaml
-from botocore.exceptions import ClientError
 from botocore.config import Config
+from botocore.exceptions import ClientError
 
 from config import TestConfig
 from resources import test_config_file_path
@@ -22,14 +22,14 @@ class BaseObjectTest(unittest.TestCase):
 
         logging.basicConfig(level=logging.DEBUG)
 
-        self.session = sufycore.session.Session()
+        self.sufy_session = sufycore.session.Session()
 
         proxies_arg = None
         if test_config.proxy.enable:
             proxies_arg = {
                 'http': f'{test_config.proxy.type}://{test_config.proxy.host}:{test_config.proxy.port}',
             }
-        self.object_service = self.session.create_client(
+        self.object_service = self.sufy_session.create_client(
             service_name='object',
             sufy_access_key_id=test_config.auth.accessKey,
             sufy_secret_access_key=test_config.auth.secretKey,
@@ -50,8 +50,8 @@ class BaseObjectTest(unittest.TestCase):
             pass
 
         # 测试环境每个测试用例开始前都确保bucket存在并清空所有文件
-        # self.make_sure_bucket_exists()
-        # self.clean_all_files()
+        self.make_sure_bucket_exists()
+        self.clean_all_files()
 
     def check_public_request_header(self, request: CassetteRequest):
         host = request.url.hostname
@@ -117,7 +117,7 @@ class BaseObjectTest(unittest.TestCase):
             )
 
             # 使用批量删除接口删除所有文件
-            if len(list_resp['contents']) > 0:
+            if len(list_resp['Contents']) > 0:
                 self.object_service.delete_objects(
                     Bucket=self.bucket_name,
                     Delete={
@@ -125,9 +125,9 @@ class BaseObjectTest(unittest.TestCase):
                     },
                 )
 
-            if not list_resp['isTruncated']:
+            if not list_resp['IsTruncated']:
                 break
-            continuation_token = list_resp['nextContinuationToken']
+            continuation_token = list_resp['NextContinuationToken']
 
     def force_delete_bucket(self):
         try:

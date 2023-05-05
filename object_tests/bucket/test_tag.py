@@ -6,14 +6,14 @@ class TestTag(BaseObjectTest):
     def setUp(self):
         super().setUp()
         self.__tagging = {
-            'tagSet': [
+            'TagSet': [
                 {
-                    'key': 'test-tag-key-1',
-                    'value': 'test-tag-value-1',
+                    'Key': 'test-tag-key-1',
+                    'Value': 'test-tag-value-1',
                 },
                 {
-                    'key': 'test-tag-key-2',
-                    'value': 'test-tag-value-2',
+                    'Key': 'test-tag-key-2',
+                    'Value': 'test-tag-value-2',
                 },
             ],
         }
@@ -41,7 +41,6 @@ class TestTag(BaseObjectTest):
             self.assertEqual('No Content', resp.status_message)
 
     def test_get_bucket_tagging(self):
-
         self.object_service.put_bucket_tagging(
             Bucket=self.bucket_name,
             Tagging=self.__tagging,

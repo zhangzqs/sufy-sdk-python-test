@@ -15,8 +15,8 @@ class ObjectManageTest(BaseObjectTest):
             self.object_service.copy_object(
                 Bucket=self.bucket_name,
                 Key=dest_key,
-                copySource=f"{self.bucket_name}/{src_key}",
-                metadataDirective=metadata_directive,
+                CopySource=f"{self.bucket_name}/{src_key}",
+                MetadataDirective=metadata_directive,
             )
 
         with self.vcr.use_cassette("object_copy_object.yaml") as cass:
@@ -88,8 +88,8 @@ class ObjectManageTest(BaseObjectTest):
             self.object_service.delete_objects(
                 Bucket=self.bucket_name,
                 Delete={
-                    'objects': list(map(lambda x: {'key': x}, keys)),
-                    'quiet': False,
+                    'Objects': list(map(lambda x: {'Key': x}, keys)),
+                    'Quiet': False,
                 },
             )
 
@@ -132,7 +132,7 @@ class ObjectManageTest(BaseObjectTest):
                 Bucket=self.bucket_name,
                 Key=key,
                 RestoreRequest={
-                    'days': 1,
+                    'Days': 1,
                 },
             )
 

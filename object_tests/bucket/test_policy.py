@@ -59,7 +59,7 @@ class TestBucketPolicy(BaseObjectTest):
         def run():
             r = self.object_service.get_bucket_policy(Bucket=self.bucket_name)
             self.assertIsNotNone(r)
-            self.assertDictEqual(json.loads(r['policy']), json.loads(self.__policy))
+            self.assertDictEqual(json.loads(r['Policy']), json.loads(self.__policy))
 
         with self.vcr.use_cassette('test_get_bucket_policy.yaml') as cass:
             run()
