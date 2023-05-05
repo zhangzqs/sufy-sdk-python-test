@@ -10,7 +10,7 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 
 from config import TestConfig
-from resources import test_config_file_path
+from resources import test_config_file_path, test_vcr_tmp_file_dir_path
 from util.cass import CassetteRequest, CassetteResponse
 
 
@@ -39,13 +39,13 @@ class BaseObjectTest(unittest.TestCase):
         )
 
         self.vcr = vcr.VCR(
-            cassette_library_dir=test_config.vcr.cassette_library_dir,
+            cassette_library_dir=test_vcr_tmp_file_dir_path,
             serializer=test_config.vcr.serializer,
             record_mode=test_config.vcr.record_mode,
             match_on=test_config.vcr.match_on,
         )
         try:
-            shutil.rmtree(self.test_config.vcr.cassette_library_dir)
+            shutil.rmtree(test_vcr_tmp_file_dir_path)
         except FileNotFoundError:
             pass
 

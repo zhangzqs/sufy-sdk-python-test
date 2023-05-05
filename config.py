@@ -39,7 +39,6 @@ class ProxyConfig:
 @dataclass()
 class VCRConfig:
     serializer: str
-    cassette_library_dir: str
     record_mode: str
     match_on: list
 

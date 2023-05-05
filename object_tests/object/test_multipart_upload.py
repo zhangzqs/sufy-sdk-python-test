@@ -65,7 +65,7 @@ class MultipartUploadTest(BaseObjectTest):
             self.check_public_request_header(req)
             self.assertEqual('PUT', req.method)
             self.assertEqual('/' + self.bucket_name + '/' + key, req.url.path)
-            self.assertEqual('UploadId=' + upload_id + '&PartNumber=1', req.url.query)
+            self.assertEqual('uploadId=' + upload_id + '&partNumber=1', req.url.query)
 
             resp = cu.response()
             self.check_public_response_header(resp)
@@ -126,7 +126,7 @@ class MultipartUploadTest(BaseObjectTest):
             self.check_public_request_header(req)
             self.assertEqual('POST', req.method)
             self.assertEqual('/' + self.bucket_name + '/' + key, req.url.path)
-            self.assertEqual('UploadId=' + upload_id, req.url.query)
+            self.assertEqual('uploadId=' + upload_id, req.url.query)
 
             resp = cu.response()
             self.check_public_response_header(resp)
@@ -383,7 +383,7 @@ class MultipartUploadTest(BaseObjectTest):
             MaxUploads=2,
             Prefix=prefix,
         )
-        multipart_uploads = resp['uploads']
+        multipart_uploads = resp['Uploads']
         while resp['IsTruncated']:
             resp = self.object_service.list_multipart_uploads(
                 Bucket=self.bucket_name,
@@ -392,7 +392,7 @@ class MultipartUploadTest(BaseObjectTest):
                 KeyMarker=resp['NextKeyMarker'],
                 UploadIdMarker=resp['NextUploadIdMarker'],
             )
-            multipart_uploads.extend(resp['uploads'])
+            multipart_uploads.extend(resp['Uploads'])
 
         upload1 = list(filter(lambda x: x['UploadId'] == upload_id1, multipart_uploads))
         upload2 = list(filter(lambda x: x['UploadId'] == upload_id2, multipart_uploads))

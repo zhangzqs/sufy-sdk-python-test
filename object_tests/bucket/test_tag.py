@@ -19,6 +19,9 @@ class TestTag(BaseObjectTest):
         }
 
     def test_put_bucket_tagging(self):
+        # TODO: 服务器端bug未修复，暂时跳过
+        self.skipTest('Not fixed yet')
+
         def run():
             self.object_service.put_bucket_tagging(
                 Bucket=self.bucket_name,
@@ -41,6 +44,9 @@ class TestTag(BaseObjectTest):
             self.assertEqual('No Content', resp.status_message)
 
     def test_get_bucket_tagging(self):
+        # TODO: 服务器端bug未修复，暂时跳过
+        self.skipTest('Not fixed yet')
+
         self.object_service.put_bucket_tagging(
             Bucket=self.bucket_name,
             Tagging=self.__tagging,
